@@ -1,12 +1,20 @@
 [package]
 name = "allot"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 
 license = "MIT OR Apache-2.0"
 description = "High-assurance resource portioning and scoped memory allotment. Part of the Honest-Classified security suite."
-
 authors = ["James Hunt <jameshuntdevelopment@gmail.com>"]
 repository = "https://github.com/jameshuntt/allot"
+readme = "README.md"
+keywords = ["allocator", "arena", "memory", "resource", "paging"]
+categories = ["memory-management", "data-structures"]
+
+[features]
+default = []
+paging = []
 
 [dependencies]
+
+[workspace]

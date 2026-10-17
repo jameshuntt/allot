@@ -1,14 +1,31 @@
-//! # ALLOT
-//! High-assurance resource portioning and scoped memory allotment.
-//! 
-//! This crate provides primitives for the formal allotment of storage and 
-//! system resources within a defined `scope`. It ensures that every byte 
-//! utilized by the "Honest" suite is explicitly assigned, tracked, and 
-//! reclaimed according to deterministic lifetime policies.
+//! High-assurance memory allotment primitives.
 //!
-//! ## Core Security Principles
-//! * **Proportionality:** Resources are allotted only in the exact quantity required.
-//! * **Temporal Bounds:** Allotments are strictly tied to `scope` lifetimes.
-//! * **Exclusivity:** Prevents overlapping allotments to maintain memory integrity.
-//! * **Sanitization:** Integrated with `classified` to ensure allotted space 
-//!   is scrubbed upon reclamation.
+//! `allot` owns the concrete memory side of the ecosystem: domains, tracked
+//! allocations, bump arenas, raw growable buffers, reusable page leases and
+//! optional page-table value types. Scheduling and pointer dispatch stay in PETR.
+
+#![deny(unsafe_op_in_unsafe_fn)]
+
+mod arena;
+mod orchestrator;
+mod page_pool;
+#[cfg(feature = "paging")]
+pub mod paging;
+mod rawbuf;
+mod trace;
+mod types;
+
+pub use arena::Arena;
+pub use orchestrator::MemoryOrchestrator;
+pub use page_pool::{CircularPageBuffer, PAGE_SIZE, PageLease, PagePool};
+/// Backward-compatible name from the temporal pointer prototype.
+pub type CircularRealityBuffer = CircularPageBuffer;
+pub use rawbuf::RawBuf;
+pub use trace::{
+    ChannelTraceSink, NoopTraceSink, SharedTraceSink, TraceEvent, TraceEventKind, TraceSink,
+    VecTraceSink,
+};
+pub use types::{
+    AllocationId, DomainStats, JobId, MemoryBlock, MemoryDomain, MemoryDomainId, MemoryError,
+    MemoryKind, MemoryStats, TraceId, TypedHandle,
+};
